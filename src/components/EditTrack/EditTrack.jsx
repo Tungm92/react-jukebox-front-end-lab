@@ -1,5 +1,5 @@
-import {useState} from 'react';
-import { useNavigate } from 'react-router-dom';
+import {useState, useEffect} from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const initialState = {
     title: '',
@@ -7,15 +7,34 @@ const initialState = {
   };
   
 
-const TrackForm = (props) => {
+const EditTrack = ({ updateTrack, getTrackId }) => {
     const [formData, setFormData] = useState(initialState);
+    const {id} = useParams()
     const navigate = useNavigate();
-
-    const handleSubmit = (e) => {
+    
+    useEffect(() => {
+        const fetchTracks = async () => {
+            try {
+                const track = await getTrackId(id)
+                setFormData({ title: track.title, artist: track.artist });
+             } catch (error) {
+                console.error('Failed to fetch track:', error);
+              }
+            }
+        fetchTracks()
+    }, [id])
+    
+    
+    
+    const handleSubmit = async(e) => {
         e.preventDefault()
-        props.createTrack(formData)
-        setFormData(initialState)
-        navigate('/')
+        try{
+            await updateTrack(id, formData)
+            navigate('/')
+        }
+        catch(error){
+            console.log(error)
+        }
     }   
     
     const handleChange = ({target}) => {
@@ -24,6 +43,7 @@ const TrackForm = (props) => {
     
     return (
     <>
+    {}
         <form onSubmit={handleSubmit}>
             <label htmlFor="title">Track Title:</label>
         <input
@@ -48,4 +68,4 @@ const TrackForm = (props) => {
 
 }
 
-export default TrackForm;
+export default EditTrack;
