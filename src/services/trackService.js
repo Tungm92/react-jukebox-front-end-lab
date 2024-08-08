@@ -34,4 +34,12 @@ const getTracks = async () => {
     return response.json();
   };
 
-  export { getTracks, createTrack, updateTrack, deleteTrack };
+  const getTrackId = async(id) => {
+    const response = await fetch(`${BASE_URL}/${id}`, {
+      method: 'GET'
+    });
+    if (!response.ok) throw new Error('Failed to delete track');
+    return response.json();
+  }
+
+  export { getTracks, createTrack, updateTrack, deleteTrack, getTrackId };
